@@ -38,7 +38,8 @@
                                 <a class="nav-link" href="account.html">Account</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="login.html">Login</a>
+                                <a class="nav-link" href="login.html" id="logInNav">Login</a>
+                                <a class="nav-link" href="javascript:void(0)" id="logOutNav" style="display:none;">Log Out</a>
                             </li>
                         </ul>
                     </div>
@@ -57,22 +58,32 @@
                     <div class="contact-form">
                         <div class="contact-form-heading mb-4">
                             <h4>
-                                Log <b>In</b>
+                                Account Detail
                             </h4>
-                            <p>Please Login your account</p>
-
                         </div>
                         <form id="loginFormControl">
                             <div class="form-group">
                                 <label class="form-label">Email Id</label>
-                                <input type="text" class="form-control" placeholder="Email Id" id="txtEmail">
+                                <input type="text" class="form-control" id="txtEmail" readonly>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" placeholder="Password" id="password">
+                                <label class="form-label">Plan Type</label>
+                                <input type="text" class="form-control" id="txtPlanType" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Plan Name</label>
+                                <input type="text" class="form-control" id="txtPlanName" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Plan Amount</label>
+                                <input type="text" class="form-control" id="txtPlanAmount" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Purchase Date</label>
+                                <input type="text" class="form-control" id="txtPlanBuyDate" readonly>
                             </div>
 
-                            <button type="button" class="btnn" id="loginBtn">Submit</button>
+                            <button type="button" class="btnn" id="btnChangePlan">Change Plan</button>
                         </form>
                     </div>
                 </div>
@@ -146,52 +157,28 @@
 
     <script>
         $(document).ready(function () {
-            $('#loginBtn').click(function () {
-                let isValid = true;
 
-                const email = $('#txtEmail').val();
-                // Check Email field
-                if (email == '') {
-                    $('#txtEmail').addClass('redRoundedBorder');
-                    isValid = false;
-                } else {
-                    $('#txtEmail').removeClass('redRoundedBorder');
-                }
-
-                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                // Check if email is valid
-                if (!emailRegex.test(email)) {
-                    isValid = false;
-                    $('#txtEmail').addClass('redRoundedBorder'); // Highlight the field
-                } else {
-                    $('#txtEmail').removeClass('redRoundedBorder'); // Reset the border color
-                }
-
-
-                // Check Password field
-                if ($('#password').val() == '') {
-                    $('#password').addClass('redRoundedBorder');
-                    isValid = false;
-                } else {
-                    $('#password').removeClass('redRoundedBorder');
-                }
-
-                if (isValid == true) {
-                    const lastUserId = parseInt(localStorage.getItem("lastUserId"));
-                    for (var i = 0; i <= lastUserId; i++) {
-
-                        if ($('#txtEmail').val().trim() == localStorage.getItem("userLoginEmail" + i)) {
-                            localStorage.setItem("currentUserId", i);
-                            localStorage.setItem("isLogin", "yes");
-                            window.location = "account.html";
-                            break;
-                        }
-
-                    }
-                }
-
+            $("#btnChangePlan").click(function () {
+                location.href = "price.html";
             });
+
+            const currentUser = localStorage.getItem("currentUserId");
+            $("#txtEmail").val(localStorage.getItem("userLoginEmail" + currentUser));
+            $("#txtPlanName").val(localStorage.getItem("userPlanName" + currentUser));
+
+            const planType = localStorage.getItem("userPlanType" + currentUser);
+            $("#txtPlanType").val(planType);
+
+            let amt = localStorage.getItem("userPlanAmount" + currentUser).replace("$", "");
+            if (planType == "Yearly") {
+                amt = parseFloat(amt).toFixed(2) * 12;
+                $("#txtPlanAmount").val("$" + amt);
+            }
+            else {
+                $("#txtPlanAmount").val(amt);
+            }
+
+            $("#txtPlanBuyDate").val(localStorage.getItem("userPlanBuyDateTime" + currentUser));
 
             //logo slider
             $('.logos-slider').slick({
